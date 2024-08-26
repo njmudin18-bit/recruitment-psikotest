@@ -78,34 +78,60 @@ class IdentitaspribadiService
 
   public function report($StartDate, $EndDate)
   {
-    $data = IdentitaspribadiModel::select('*')
-            ->whereRaw('DATE(CreatedDate) BETWEEN ? AND ?', [$StartDate, $EndDate])
-            ->orderBy('CreatedDate', 'DESC');
+    $data = User::whereHas('roles', function ($query) {
+              $query->where('name', '=', 'Pelamar');
+            })->with('roles')
+            ->select(
+              'users.*', 'users.created_at AS TanggalDaftar', 'trans_identitaspribadi.*'
+            )
+            ->leftJoin('trans_identitaspribadi', 'trans_identitaspribadi.CreatedBy', '=', 'users.id')
+            ->whereRaw('DATE(users.created_at) BETWEEN ? AND ?', [$StartDate, $EndDate])
+            ->orderBy('users.id', 'DESC')
+            ->get();
 
     return DataTables::of($data)
       ->addIndexColumn()
-      ->editColumn('CreatedDate', function ($row) {
-        return Carbon::parse($row->CreatedDate)->setTimezone('Asia/Jakarta')->format('d-m-Y');
-      })
       ->addColumn('action', function ($row) {
-        $actionBtn = '';
+        $actionBtn  = '';
         $Isi        = "'".$row->CreatedBy."', '".$row->Nama."'";
-        $actionBtn .= '<button type="button" name="view" onclick="view('.$row->CreatedBy.')" class="btn btn-info btn-sm me-2" title="Cek full data diri"><i class="bx bx-search-alt"></i></button>';
-        $actionBtn .= '<button type="button" name="view" onclick="hapus('.$Isi.')" class="btn btn-danger btn-sm me-2" title="Hapus data & semua dokumen"><i class="bx bx-trash-alt"></i></button>';
-        $actionBtn .= '<button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#ModalTable"
-                        data-record-id="'.$row->CreatedBy.'" data-record-name="'.$row->Nama.'" title="Cek dokumen">
-                        <i class="bx bx-file-find"></i>
-                      </button>';
+        $actionBtn .= '<button type="button" name="view" onclick="hapus('.$Isi.')" class="btn btn-danger btn-sm" title="Hapus data & semua dokumen"><i class="bx bx-trash-alt"></i></button>';
+        $actionBtn .= '<button type="button" class="btn btn-success btn-sm ms-1 me-1" data-bs-toggle="modal" data-bs-target="#ModalTable"
+                          data-record-id="'.$row->CreatedBy.'" data-record-name="'.$row->Nama.'" title="Cek dokumen">
+                          <i class="bx bx-file-find"></i>
+                        </button>';
+        if ($row->CreatedBy == null) {
+          $actionBtn .= '<button type="button" name="view" class="btn btn-info btn-sm" title="Belum dilengkapi" disabled><i class="bx bx-search-alt"></i></button>';
+        } else {
+          $actionBtn .= '<button type="button" name="view" onclick="view('.$row->CreatedBy.')" class="btn btn-info btn-sm" title="Cek full data diri"><i class="bx bx-search-alt"></i></button>';
+        }
         
         return '<div class="text-center">' . $actionBtn . '</div>';
       })
+      ->editColumn('Nama', function ($row) {
+        return $row->Nama == null ? $row->name : $row->Nama; ;
+      })
       ->editColumn('Posisi', function ($row) {
-        return capitalizeWords($row->Posisi);
+        return capitalizeWords($row->Posisi == null ? '-' : $row->Posisi);
+      })
+      ->editColumn('Department', function ($row) {
+        return capitalizeWords($row->Department == null ? '-' : $row->Department);
+      })
+      ->editColumn('NoHp', function ($row) {
+        return $row->NoHp == null ? '-' : $row->NoHp;
+      })
+      ->editColumn('Email', function ($row) {
+        return $row->Email == null ? '-' : $row->Email;
+      })
+      ->editColumn('Jk', function ($row) {
+        return $row->Jk == null ? '-' : $row->Jk;
       })
       ->editColumn('TanggalLahir', function ($row) {
         return Carbon::parse($row->TanggalLahir)->age;
       })
-      ->rawColumns(['action', 'TTL', 'TanggalLahir'])
+      ->editColumn('TanggalDaftar', function ($row) {
+        return $row->TanggalDaftar;
+      })
+      ->rawColumns(['action'])
       ->make(true);
   }
 

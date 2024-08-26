@@ -126,11 +126,11 @@
                       <thead>
                         <tr class="bg-primary text-white text-center">
                           <th class="text-center" width="5%">No</th>
-                          <th class="text-center">Nama Dok.</th>
-                          <th class="text-center" width="10%">Type Dok.</th>
-                          <th class="text-center" width="10%">Ext Dok.</th>
-                          <th class="text-center" width="15%">Ukuran Dok.</th>
-                          <th class="text-center" width="15%">Created</th>
+                          <th class="text-center">Nama Dokumen</th>
+                          <th class="text-center" width="10%">Type</th>
+                          <th class="text-center" width="10%">Extention</th>
+                          <th class="text-center" width="15%">Size</th>
+                          <th class="text-center" width="15%">Created date</th>
                         </tr>
                       </thead>
                       <tbody></tbody>
@@ -328,8 +328,8 @@
               className: 'text-start'
             },
             {
-              data: 'CreatedDate',
-              name: 'CreatedDate',
+              data: 'TanggalDaftar',
+              name: 'TanggalDaftar',
               className: 'text-center'
             }
           ]
