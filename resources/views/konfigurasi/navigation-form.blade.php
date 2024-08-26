@@ -99,5 +99,11 @@
       $("#role-error").hide();
       $(this).next().empty();
     });
+
+    $('#name').on('keyup', function() {
+      var text = $(this).val();
+      var lowercaseText = text.toLowerCase().replace(/\s+/g, '-');
+      $('#url').val(lowercaseText);
+    });
   })
 </script>

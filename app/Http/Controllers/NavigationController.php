@@ -36,8 +36,8 @@ class NavigationController extends Controller
     public function create()
     {
       $navigation = new Navigation();
-      $parent = Navigation::where('type_menu', '=', 'parent')->get();
-      $role = Role::all();
+      $parent     = Navigation::where('type_menu', '=', 'parent')->get();
+      $role       = Role::all();
 
       return view('konfigurasi.navigation-form', compact('navigation', 'parent', 'role'));
     }
@@ -45,7 +45,14 @@ class NavigationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(NavigationRequest $request)
+    public function simpan(NavigationRequest $request)
+    {
+      $result = $this->navigationService->store($request->all());
+
+      return response()->json($result);
+    }
+
+    public function store_OLD(NavigationRequest $request)
     {
       $result = $this->navigationService->store($request->all());
 

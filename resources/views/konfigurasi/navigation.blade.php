@@ -168,7 +168,43 @@
 
           $.ajax({
               data: $('#form-modalAction').serialize(),
-              url: `{{ url('navigation/') }}/${id}`,
+              url: "{{ route('navigation.simpan') }}",
+              type: "POST",
+              dataType: 'json',
+              success: function(response) {
+                $('#modalAction').modal('hide');
+                table.draw();
+                if (response.status == true) {
+                  showToast('success', response.message);
+                } else {
+                  showToast('error', response.message);
+                }
+                $('#save-modal').html('Save');
+                $('#save-modal').removeClass('disabled');
+              },
+              error: function(response) {
+                var errors = response.responseJSON.errors;
+                if (errors) {
+                  Object.keys(errors).forEach(function(key) {
+                    var errorMessage = errors[key][0];
+                    $('#' + key).siblings('.text-danger').text(errorMessage).show();
+                  });
+                }
+                $('#save-modal').html('Save');
+                $('#save-modal').removeClass('disabled');
+              }
+          });
+        });
+
+        $('#save-modal-OLD').click(function(e) {
+          e.preventDefault();
+          $(this).html('Sending..');
+          $(this).addClass('disabled');
+          var id = $('#navigationId').val();
+
+          $.ajax({
+              data: $('#form-modalAction').serialize(),
+              url: `{{ url('navigation') }}/${id}`,
               type: "POST",
               dataType: 'json',
               success: function(response) {
@@ -289,12 +325,12 @@
             {
               data: 'created_at',
               name: 'created_at',
-              className: 'text-center'
+              className: 'text-start'
             },
             {
               data: 'updated_at',
               name: 'updated_at',
-              className: 'text-center'
+              className: 'text-start'
             }
           ]
         });

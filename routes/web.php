@@ -66,6 +66,9 @@ Route::middleware('auth')->group(function () {
   Route::resource('permissions', PermissionController::class);
   Route::resource('users', UserController::class);
 
+  //NAVIGATION
+  Route::post('/navigation-simpan', [NavigationController::class, 'simpan'])->name('navigation.simpan');
+
   Route::get('/users-create', [UserController::class, 'create'])->name('users.create');
   Route::post('/users-edit', [UserController::class, 'edit'])->name('users.edit');
   Route::post('/users-activated', [UserController::class, 'activated'])->name('user.activated');
