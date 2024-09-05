@@ -72,6 +72,7 @@ Route::middleware('auth')->group(function () {
   Route::get('/users-create', [UserController::class, 'create'])->name('users.create');
   Route::post('/users-edit', [UserController::class, 'edit'])->name('users.edit');
   Route::post('/users-activated', [UserController::class, 'activated'])->name('user.activated');
+  Route::post('/users-delete', [UserController::class, 'delete'])->name('user.delete');
 
   //PSIKOTEST
   //1. TYPE SOAL

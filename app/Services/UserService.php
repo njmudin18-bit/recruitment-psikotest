@@ -27,15 +27,16 @@ class UserService
       return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('action', function ($row) {
+          $IsiHapus   = "'".$row->id."', '".$row->name."'";
           $actionBtn  = '<a href="' . url("users", $row->id) . '/edit" name="edit" data-id="' . $row->id . '" class="editRole btn btn-warning btn-sm" title="Edit"><i class="bx bx-edit"></i></a>';
-          $actionBtn .= '<button type="button" name="delete" data-id="' . $row->id . '" class="deleteUser btn btn-danger btn-sm ms-1 me-1" title="Hapus"><i class="bx bx-x-circle"></i></button>';
+          $actionBtn .= '<button type="button" name="delete" onclick="deleteUser('.$IsiHapus.')" class="deleteUser btn btn-danger btn-sm ms-1 me-1" title="Hapus"><i class="bx bx-x-circle"></i></button>';
           
           if ($row->email_verified_at == null) {
             $Aktifkan    = "'".$row->id."', 'Aktifkan'";
-            $actionBtn  .= '<button type="button" name="delete" onclick="aktifkan_akun('.$Aktifkan.')" class="deleteUser btn btn-secondary btn-sm" title="Aktifkan akun"><i class="bx bx-user-minus"></i></button>';
+            $actionBtn  .= '<button type="button" name="aktifkan" onclick="aktifkan_akun('.$Aktifkan.')" class="btn btn-secondary btn-sm" title="Aktifkan akun"><i class="bx bx-user-minus"></i></button>';
           } else {
             $NonAktifkan = "'".$row->id."', 'NonAktifkan'";
-            $actionBtn  .= '<button type="button" name="delete" onclick="aktifkan_akun('.$NonAktifkan.')" class="deleteUser btn btn-success btn-sm" title="Non aktifkan akun"><i class="bx bx-user-check"></i></button>';
+            $actionBtn  .= '<button type="button" name="aktifkan" onclick="aktifkan_akun('.$NonAktifkan.')" class="btn btn-success btn-sm" title="Non aktifkan akun"><i class="bx bx-user-check"></i></button>';
           }
           
           return '<div class="d-flex">' . $actionBtn . '</div>';
@@ -324,13 +325,16 @@ class UserService
     {
         $imagePath    = null;
         if ($userProfile->image) {
-          $imagePath  = public_path('images/users/' . $userProfile->image);
+          $imagePath  = $userProfile->image;
+          //dd($imagePath);
+          //$imagePath  = public_path('images/users/' . $userProfile->image);
         }
 
         $userProfile->delete();
 
         if ($imagePath && file_exists($imagePath)) {
-            unlink($imagePath);
+          File::delete($imagePath);
+          //unlink($imagePath);
         }
     }
 
@@ -341,6 +345,7 @@ class UserService
         ];
         // update
         User::where('id', Auth::user()->id)->update($updateData);
+        
         return response()->json([
           'status_code' => 200,
           'status'      => "success",

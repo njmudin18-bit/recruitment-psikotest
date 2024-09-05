@@ -31,6 +31,7 @@
     <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- App Css-->
     <link href="{{ asset('assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/css/customs.css') }}" id="app-style" rel="stylesheet" type="text/css" />
     <style>
       .navigation.nav-sticky .navbar-nav .nav-item .nav-link {
           line-height: 48px;
@@ -54,8 +55,8 @@
               <p class="font-size-16 text-white">{{ config('appsproperties.APPS_DESCRIPTION') }}</p>
               
               <div class="flex-wrap gap-2 mt-4 text-center">
-                <a href="{{ route('login') }}" class="btn btn-success">Sign in</a>
-                <a href="{{ route('register') }}" class="btn btn-danger">Daftar</a>
+                <a href="{{ route('login') }}" class="btn btn-success text-black">Sign in</a>
+                <a href="{{ route('register') }}" class="btn btn-danger text-black">Daftar</a>
               </div>
             </div>
           </div>
@@ -72,22 +73,22 @@
         <div class="row">
           <div class="col-lg-12">
             <div class="text-center mb-5">
-              <div class="small-title">Tentang aplikasi</div>
-              <h4>Apa itu aplikasi eRecruitment</h4>
+              <div class="small-title text-black fw-bold">Tentang aplikasi</div>
+              <h2 class="text-black">Apa itu aplikasi eRecruitment</h2>
             </div>
           </div>
         </div>
         <div class="row align-items-center">
           <div class="col-lg-5">
-            <div class="text-muted">
-              <h4>Aplikasi eRecruitment</h4>
+            <div class="text-black">
+              <h3>Aplikasi eRecruitment</h3>
               <p>Aplikasi elektronik rekrutmen (e-recruitment app) adalah alat digital yang membantu perusahaan 
                 mengelola proses rekrutmen secara online di {{ config('appsproperties.COMPANY_NAME') }}.</p>
               <p class="mb-4">Temukan kesempatan baru di sini dan jadilah bagian dari tim kami yang dinamis.</p>
 
               <div class="d-flex flex-wrap gap-2">
-                <a href="{{ route('login') }}" class="btn btn-success">Sign in</a>
-                <a href="{{ route('register') }}" class="btn btn-danger">Daftar</a>
+                <a href="{{ route('login') }}" class="btn btn-success text-black">Sign in</a>
+                <a href="{{ route('register') }}" class="btn btn-danger text-black">Daftar</a>
               </div>
             </div>
           </div>
@@ -101,8 +102,8 @@
                       <div class="mb-3">
                         <i class="mdi mdi-file-document-multiple h1 text-success"></i>
                       </div>
-                      <h5>Formulir</h5>
-                      <p class="text-muted mb-0">Lengkapi semua formulir yang dibutuhkan mulai dari 
+                      <h5 class="text-black">Formulir</h5>
+                      <p class="text-black mb-0">Lengkapi semua formulir yang dibutuhkan mulai dari 
                         Identitas diri, Pasangan, Orangtua, Anak dll.
                       </p>
                     </div>
@@ -114,8 +115,8 @@
                       <div class="mb-3">
                         <i class="mdi mdi-cloud-upload-outline h1 text-success"></i>
                       </div>
-                      <h5>Dokumen</h5>
-                      <p class="text-muted mb-0">Unggah semua dokumen yang dibutuhkan mulai dari
+                      <h5 class="text-black">Dokumen</h5>
+                      <p class="text-black mb-0">Unggah semua dokumen yang dibutuhkan mulai dari
                         Surat lamaran, CV, KTP, NPWP dll.
                       </p>
                     </div>
@@ -142,7 +143,7 @@
     <script src="{{ asset('assets/libs/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/libs/metismenu/metisMenu.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
+    <!-- <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script> -->
     <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
 
     <script src="{{ asset('assets/libs/jquery.easing/jquery.easing.min.js') }}"></script>

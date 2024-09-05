@@ -1,3 +1,8 @@
+.navbar-logo img.logo {
+  width: 180px;
+  height: auto;
+}
+
 .has-error .help-block {
   width: 100%;
   margin-top: 0.25rem;
@@ -139,7 +144,26 @@ box-shadow: rgba(255,255,255, 0.75) 1.5em 0 0 0, rgba(255,255,255, 0.75) 1.1em 1
 }
 
 @media only screen and (max-width: 768px) {
+  .landing-footer p {
+    font-size: 11px;
+  }
+
   .position-fixed {
     position: relative !important;
+  }
+
+  .invoice-title p {
+    font-size: 9px;
+  }
+
+  .invoice-title h4,
+  .invoice-content h4,
+  .invoice-content h5
+  {
+    font-size: 14px;
+  }
+
+  .col-form-label {
+    font-size: 10px;
   }
 }

@@ -14,8 +14,8 @@ return [
   'APPS_DESCRIPTION'    => 'Aplikasi pengelolaan calon pegawai di PT. Multi Arta Sekawan',
   'APPS_KEYWORD'        => 'Aplikasi pengelolaan calon pegawai di PT. Multi Arta Sekawan',
   'APPS_AUTHOR'         => 'IT Department',
-  'APPS_ICON'           => 'assets/images/e-recruitment-icon.png',
+  'APPS_ICON'           => 'assets/images/e-recruitment-icon.webp',
   'APPS_ICON_MAS'       => 'assets/images/icon.png',
-  'APPS_LOGO'           => 'assets/images/e-recruitment-logo.png',
+  'APPS_LOGO'           => 'assets/images/e-recruitment-logo.webp',
   'APPS_COPYRIGHT'      => 'Copyright © 2024 PT. Multi Arta Sekawan - All rights reserved.'
 ];

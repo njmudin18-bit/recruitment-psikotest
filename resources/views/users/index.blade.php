@@ -142,6 +142,47 @@
         });
       });
 
+      function deleteUser(UserID, UserName) {
+        Swal.fire({
+          title: "Hapus username " + UserName + "?",
+          text: "Data yang sudah dihapus tidak dapat dikembalikan!",
+          icon: "question",
+          showCancelButton: true,
+          allowOutsideClick: false,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, hapus",
+          cancelButtonText: "Batal",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $.ajax({
+              data: {
+                "UserID": UserID,
+                "_token": "{{ csrf_token() }}"
+              },
+              url: "{{ route('user.delete') }}",
+              type: "POST",
+              dataType: "JSON",
+              beforeSend: function (data) {
+                $("#loading").show();
+              },
+              success: function(data) {
+                $("#loading").hide();
+                reload_table();
+              },
+              error: function(jqXHR, textStatus, errorThrown) {
+                Swal.fire(
+                  'Oops...',
+                  jqXHR.responseJSON.message,
+                  textStatus
+                );
+                $("#loading").hide();
+              }
+            });
+          }
+        });
+      }
+
       function aktifkan_akun(id, Status) {
         Swal.fire({
           title: "Anda yakin?",

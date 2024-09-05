@@ -44,6 +44,21 @@
         }
       }
     </style>
+    <style>
+      /* Print-specific styles */
+      @media print {
+        .row.special {
+          word-wrap: break-word; /* Break long words or URLs */
+          overflow-wrap: break-word; /* Alternative for better compatibility */
+          hyphens: auto; /*Optional: add hyphenation if needed */
+          width: 100%; /* Ensure container width fits page */
+        }
+
+        .container.p-1.masterContent {
+          padding: 0 !important;
+        }
+      }
+    </style>
   </head>
   <body data-sidebar="dark" data-layout-mode="light">
     <div id="layout-wrapper">
@@ -60,195 +75,326 @@
 
             <div class="row mb-3 d-print-none">
               <div class="float-start">
-                <a href="javascript:window.print()" class="btn btn-success waves-effect waves-light me-1"><i class="fa fa-print me-1"></i> Cetak</a>
+                <button id="btnPrint" class="btn btn-danger"><i class="fa fa-print me-1"></i> Cetak</button>
+                <!-- <a href="javascript:window.print()" class="btn btn-success waves-effect waves-light me-1"><i class="fa fa-print me-1"></i> Cetak</a> -->
               </div>
             </div>
             <div class="row">
               <div class="col-lg-12">
                 <div class="card">
                   <div class="card-body">
-                    <div id="page" class="container p-3">
+                    <div id="masterContent" class="container p-1 masterContent">
                       <!-- <form class="form"> -->
                         <div class="invoice-title">
                           <div class="row border-bottom">
-                            <div class="col-md-3 text-center justify-content-center mt-3">
+                            <div class="col-md-2 text-center justify-content-center d-none d-lg-block d-print-block mt-3 mb-3">
                               <img id="logo" src="{{ asset(config('appsproperties.COMPANY_LOGO')) }}" width="140" height="auto" />
                             </div>
-                            <div class="col-md-7">
-                              <h4 class="text-start text-dark">{{ strtoupper(config('appsproperties.COMPANY_NAME')) }}</h4>
-                              <p class="text-start text-dark">Alamat: {{ config('appsproperties.COMPANY_ADDRESS') }}</p>
-                              <p class="text-start text-dark mb-3">Email: {{ config('appsproperties.COMPANY_EMAIL') }}, Telp. {{ config('appsproperties.COMPANY_PHONE') }}</p>
+                            <div class="col-md-8 text-center justify-content-center text-dark mb-3">
+                              <h4>{{ strtoupper(config('appsproperties.COMPANY_NAME')) }}</h4>
+                              <p>Alamat: {{ config('appsproperties.COMPANY_ADDRESS') }}</p>
+                              <p>Email: {{ config('appsproperties.COMPANY_EMAIL') }}, Telp. {{ config('appsproperties.COMPANY_PHONE') }}</p>
                             </div>
-                            <div class="col-md-2 text-center">
+                            <div class="col-md-2 text-center d-none d-lg-block d-print-block mb-3">
                               @if(!empty($PasFoto))
                                 <img src="{{ url('/') }}/{{ $PasFoto->File }}" alt="{{ $Identitas->Nama }}" class="avatar-md rounded">
                               @endif
                             </div>
                           </div>
                         </div>
-                        <div class="row mt-3">
+                        <div class="row mt-3 invoice-content">
                           <div class="col-sm-12">
-                            <h4 class="text-center text-with-border text-dark"><strong>FORMULIR APLIKASI PELAMAR</strong></h4>
+                            <h4 class="text-center text-with-border text-dark fw-bold">FORMULIR APLIKASI PELAMAR</h4>
                             <!-- <span class="text-center"></span> -->
                           </div>
                         </div>
-                        <div class="row mt-1">
-                          <label class="col-sm-3 col-form-label text-dark">Posisi/ Jabatan<span class="float-end">:</span></label>
-                          <label class="col-sm-3 col-form-label text-capitalize text-dark">{{ $Identitas->Posisi }}</label>
-                          <label class="col-sm-3 col-form-label text-dark">Sumber informasi<span class="float-end">:</span></label>
-                          <label class="col-sm-3 col-form-label text-capitalize text-dark">{{ $Identitas->SumberInfo }}</label>
+                        <div class="row mt-1 invoice-content">
+                          <div class="col-md-6">
+                            <div class="row">
+                              <label class="col-6 col-form-label text-dark">Posisi<span class="float-end">:</span></label>
+                              <label class="col-6 col-form-label text-capitalize text-dark">{{ $Identitas->Posisi }}</label>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="row">
+                              <label class="col-6 col-form-label text-dark">Sumber informasi<span class="float-end">:</span></label>
+                              <label class="col-6 col-form-label text-capitalize text-dark">{{ $Identitas->SumberInfo }}</label>
+                            </div>
+                          </div>
                         </div>
-                        <div class="row">
-                          <label class="col-sm-3 col-form-label text-dark">Department<span class="float-end">:</span></label>
-                          <label class="col-sm-3 col-form-label text-dark">{{ $Identitas->Department }}</label>
-                          <label class="col-sm-3 col-form-label text-dark">Gaji yang diminta<span class="float-end">:</span></label>
-                          <label class="col-sm-3 col-form-label text-dark">Rp. {{ number_format($Identitas->GajiDiminta, 0) }}</label>
+                        <div class="row invoice-content">
+                          <div class="col-md-6">
+                            <div class="row">
+                              <label class="col-6 col-form-label text-dark">Department<span class="float-end">:</span></label>
+                              <label class="col-6 col-form-label text-capitalize text-dark">{{ $Identitas->Department }}</label>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="row">
+                              <label class="col-6 col-form-label text-dark">Gaji yang diminta<span class="float-end">:</span></label>
+                              <label class="col-6 col-form-label text-capitalize text-dark">Rp. {{ number_format($Identitas->GajiDiminta, 0) }}</label>
+                            </div>
+                          </div>
                         </div>
                         <!-- A. IDENTITAS PRIBADI -->
-                        <div class="row mt-3 mb-3">
+                        <div class="row mt-3 mb-3 invoice-content">
                           <div class="col-md-12">
-                            <h5 class="text-dark"><strong>A. IDENTITAS PRIBADI</strong></h5>
+                            <h5 class="text-dark fw-bold">A. IDENTITAS PRIBADI</h5>
                           </div>
-                          <div class="col-md-12 mt-3">
+                          <div class="col-md-12 mt-1">
                             <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Nama lengkap<span class="float-end">:</span></label>
-                              <label class="col-sm-9 col-form-label text-dark">{{ $Identitas->Nama }}</label>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Nama lengkap<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Identitas->Nama }}</label>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Tempat & tgl. lahir<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Identitas->TempatLahir }}, {{ strftime('%d %B %Y', strtotime($Identitas->TanggalLahir)) }}</label>
+                                </div>
+                              </div>
                             </div>
                             <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Tempat & tgl lahir<span class="float-end">:</span></label>
-                              <label class="col-sm-9 col-form-label text-dark">{{ $Identitas->TempatLahir }}, {{ strftime('%d %B %Y', strtotime($Identitas->TanggalLahir)) }}</label>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Jenis kelamin<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Identitas->Jk == 'L' ? 'Laki-laki' : 'Perempuan' }}</label>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Status pernikahan<span class="float-end">:</span></label>
+                                  @if ($Identitas->StatusNikah == 'BK')
+                                  <label class="col-6 col-form-label text-dark">Belum Kawin</label>
+                                  @elseif ($Identitas->StatusNikah == 'K')
+                                  <label class="col-6 col-form-label text-dark">Kawin</label>
+                                  @elseif ($Identitas->StatusNikah == 'CH')
+                                  <label class="col-6 col-form-label text-dark">Cerai Hidup</label>
+                                  @else
+                                  <label class="col-6 col-form-label text-dark">Cerai Mati</label>
+                                  @endif
+                                </div>
+                              </div>
                             </div>
+
                             <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Jenis kelamin<span class="float-end">:</span></label>
-                              <label class="col-sm-3 col-form-label text-dark">{{ $Identitas->Jk == 'L' ? 'Laki-laki' : 'Perempuan' }}</label>
-                              <label class="col-sm-3 col-form-label text-dark">Status pernikahan<span class="float-end">:</span></label>
-                              @if ($Identitas->StatusNikah == 'BK')
-                              <label class="col-sm-3 col-form-label text-dark">Belum Kawin</label>
-                              @elseif ($Identitas->StatusNikah == 'K')
-                              <label class="col-sm-3 col-form-label text-dark">Kawin</label>
-                              @elseif ($Identitas->StatusNikah == 'CH')
-                              <label class="col-sm-3 col-form-label text-dark">Cerai Hidup</label>
-                              @else
-                              <label class="col-sm-3 col-form-label text-dark">Cerai Mati</label>
-                              @endif
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Nomor KTP<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Identitas->NoKtp }}</label>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Alamat KTP<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Identitas->AlamatKtp }}</label>
+                                </div>
+                              </div>
                             </div>
+
                             <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Nomor KTP<span class="float-end">:</span></label>
-                              <label class="col-sm-9 col-form-label text-dark">{{ $Identitas->NoKtp }}</label>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Alamat rumah tinggal<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Identitas->AlamatRumahTinggal }}</label>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Status tempat tinggal<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Identitas->StatusKepemilikan }}</label>
+                                </div>
+                              </div>
                             </div>
+
                             <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Alamat KTP<span class="float-end">:</span></label>
-                              <label class="col-sm-9 col-form-label text-dark">{{ $Identitas->AlamatKtp }}</label>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Nomor telepon<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Identitas->NoHp }}</label>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Email<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-lowercase text-dark">{{ $Identitas->Email }}</label>
+                                </div>
+                              </div>
                             </div>
+
                             <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Alamat rumah tinggal<span class="float-end">:</span></label>
-                              <label class="col-sm-9 col-form-label text-dark">{{ $Identitas->AlamatRumahTinggal }}</label>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Kewarganegaraan<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Identitas->Kewarganegaraan }}</label>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Agama<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Identitas->Agama }}</label>
+                                </div>
+                              </div>
                             </div>
+
                             <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Status tempat tinggal<span class="float-end">:</span></label>
-                              <label class="col-sm-3 col-form-label text-dark">{{ $Identitas->StatusKepemilikan }}</label>
-                              <label class="col-sm-3 col-form-label text-dark">Nomor telepon<span class="float-end">:</span></label>
-                              <label class="col-sm-3 col-form-label text-dark">{{ $Identitas->NoHp }}</label>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Gol. Darah dan Vaksin<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Identitas->GolDarah }} dan {{ $Identitas->Vaksin == '' ? '-' : $Identitas->Vaksin }}</label>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Alergi<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Identitas->Alergi == '' ? '-' : $Identitas->Alergi }}</label>
+                                </div>
+                              </div>
                             </div>
+
                             <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Email<span class="float-end">:</span></label>
-                              <label class="col-sm-3 col-form-label text-dark">{{ $Identitas->Email }}</label>
-                              <label class="col-sm-3 col-form-label text-dark">Kewarganegaraan<span class="float-end">:</span></label>
-                              <label class="col-sm-3 col-form-label text-dark">{{ $Identitas->Kewarganegaraan }}</label>
-                            </div>
-                            <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Agama<span class="float-end">:</span></label>
-                              <label class="col-sm-3 col-form-label text-dark">{{ $Identitas->Agama }}</label>
-                              <label class="col-sm-3 col-form-label text-dark">Berat dan tinggi badan<span class="float-end">:</span></label>
-                              <label class="col-sm-3 col-form-label text-dark">{{ $Identitas->BeratBadan }} kg dan {{ $Identitas->TinggiBadan }} cm</label>
-                            </div>
-                            <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Gol. Darah dan Vaksin<span class="float-end">:</span></label>
-                              <label class="col-sm-3 col-form-label text-dark">{{ $Identitas->GolDarah }} dan {{ $Identitas->Vaksin == '' ? '-' : $Identitas->Vaksin }}</label>
-                              <label class="col-sm-3 col-form-label text-dark">Alergi<span class="float-end">:</span></label>
-                              <label class="col-sm-3 col-form-label text-dark">{{ $Identitas->Alergi == '' ? '-' : $Identitas->Alergi }}</label>
-                            </div>
-                            <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Akun sosial media<span class="float-end">:</span></label>
-                              <label class="col-sm-9 col-form-label text-dark">{{ $Identitas->Sosmed == '' ? '-' : $Identitas->Sosmed }}</label>
-                            </div>
-                            <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Pengobatan saat ini<span class="float-end">:</span></label>
-                              <label class="col-sm-9 col-form-label text-dark">{{ $Identitas->Pengobatan == '' ? '-' : $Identitas->Pengobatan }}</label>
+                              <div class="col-md-6">
+                                <div class="row special">
+                                  <label class="col-6 col-form-label text-dark">Akun sosial media<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-dark">{{ $Identitas->Sosmed == '' ? '-' : $Identitas->Sosmed }}</label>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Pengobatan saat in<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-lowercase text-dark">{{ $Identitas->Pengobatan == '' ? '-' : $Identitas->Pengobatan }}</label>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
 
                         <!-- B. KELUARGA DAN LINGKUNGAN -->
-                        <div class="row mt-3 mb-3">
+                        <div class="row mt-3 mb-3 invoice-content">
                           <div class="col-md-12">
-                            <h5 class="text-dark"><strong>B. KELUARGA DAN LINGKUNGAN</strong></h5>
+                            <h5 class="text-dark fw-bold">B. KELUARGA DAN LINGKUNGAN</h5>
                           </div>
                           <!-- PASANGAN -->
                           <div class="col-md-12 mt-3">
-                            <h6 class="text-dark"><strong>1. Data pasangan <span class="fst-italic">(Suami/ Istri)</span></strong></h6>
+                            <h6 class="text-dark fw-bold">1. Data pasangan <span class="fst-italic">(Suami/ Istri)</span></h6>
                           </div>
-                          <div class="col-md-12 mt-3">
+                          <div class="col-md-12 mt-1">
                             <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Nama lengkap<span class="float-end">:</span></label>
-                              <label class="col-sm-9 col-form-label text-dark">{{ $Pasangan == null ? '-' : $Pasangan->NamaPasangan }}</label>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Nama lengkap<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Pasangan == null ? '-' : $Pasangan->NamaPasangan }}</label>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Tempat & tgl. lahir<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Pasangan == null ? '-' : $Pasangan->TempatLahir }}, {{ $Pasangan == null ? '-' : strftime('%d %B %Y', strtotime($Pasangan->TanggalLahir)) }}</label>
+                                </div>
+                              </div>
                             </div>
+
                             <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Tempat & tgl lahir<span class="float-end">:</span></label>
-                              <label class="col-sm-9 col-form-label text-dark">{{ $Pasangan == null ? '-' : $Pasangan->TempatLahir }}, {{ $Pasangan == null ? '-' : strftime('%d %B %Y', strtotime($Pasangan->TanggalLahir)) }}</label>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Alamat KTP<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Pasangan == null ? '-' : $Pasangan->AlamatKtp }}</label>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Pendidikan<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Pasangan == null ? '-' : $Pasangan->Pendidikan }}</label>
+                                </div>
+                              </div>
                             </div>
+
                             <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Alamat KTP<span class="float-end">:</span></label>
-                              <label class="col-sm-9 col-form-label text-dark">{{ $Pasangan == null ? '-' : $Pasangan->AlamatKtp }}</label>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Pekerjaan<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Pasangan == null ? '-' : $Pasangan->Pekerjaan }}</label>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Nama perusahaan<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Pasangan == null ? '-' : $Pasangan->Perusahaan }}</label>
+                                </div>
+                              </div>
                             </div>
+
                             <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Pendidikan<span class="float-end">:</span></label>
-                              <label class="col-sm-3 col-form-label text-dark">{{ $Pasangan == null ? '-' : $Pasangan->Pendidikan }}</label>
-                              <label class="col-sm-3 col-form-label text-dark">Pekerjaan<span class="float-end">:</span></label>
-                              <label class="col-sm-3 col-form-label text-dark">{{ $Pasangan == null ? '-' : $Pasangan->Pekerjaan }}</label>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Posisi<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Pasangan == null ? '-' : $Pasangan->Jabatan }}</label>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Nomor telepon<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Pasangan == null ? '-' : $Pasangan->NoHp }}</label>
+                                </div>
+                              </div>
                             </div>
+
                             <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Nama perusahaan<span class="float-end">:</span></label>
-                              <label class="col-sm-3 col-form-label text-dark">{{ $Pasangan == null ? '-' : $Pasangan->Perusahaan }}</label>
-                              <label class="col-sm-3 col-form-label text-dark">Posisi/ Jabatan<span class="float-end">:</span></label>
-                              <label class="col-sm-3 col-form-label text-dark">{{ $Pasangan == null ? '-' : $Pasangan->Jabatan }}</label>
-                            </div>
-                            <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Nomor telepon<span class="float-end">:</span></label>
-                              <label class="col-sm-3 col-form-label text-dark">{{ $Pasangan == null ? '-' : $Pasangan->NoHp }}</label>
-                              <label class="col-sm-3 col-form-label text-dark">Email<span class="float-end">:</span></label>
-                              <label class="col-sm-3 col-form-label text-dark">{{ $Pasangan == null ? '-' : $Pasangan->Email }}</label>
-                            </div>
-                            <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Akun sosial media<span class="float-end">:</span></label>
-                              <label class="col-sm-9 col-form-label text-dark">{{ $Pasangan == null ? '-' : $Pasangan->Sosmed }}</label>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Email<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-lowercase text-dark">{{ $Pasangan == null ? '-' : $Pasangan->Email }}</label>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="row special">
+                                  <label class="col-6 col-form-label text-dark">Akun sosial media<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-dark">{{ $Pasangan == null ? '-' : $Pasangan->Sosmed }}</label>
+                                </div>
+                              </div>
                             </div>
                           </div>
                           <!-- KONTAK -->
                           <div class="col-md-12 mt-3">
-                            <h6 class="text-dark"><strong>2. Data kontak darurat</strong></h6>
+                            <h6 class="text-dark fw-bold">2. Data kontak darurat</h6>
                           </div>
-                          <div class="col-md-12 mt-3">
+                          <div class="col-md-12 mt-1">
                             <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Nama<span class="float-end">:</span></label>
-                              <label class="col-sm-3 col-form-label text-dark">{{ $Kontak == null ? '-' : $Kontak->Nama }}</label>
-                              <label class="col-sm-3 col-form-label text-dark">Hubungan<span class="float-end">:</span></label>
-                              <label class="col-sm-3 col-form-label text-dark">{{ $Kontak == null ? '-' : $Kontak->Hubungan }}</label>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Nama<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Kontak == null ? '-' : $Kontak->Nama }}</label>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Hubungan<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Kontak == null ? '-' : $Kontak->Hubungan }}</label>
+                                </div>
+                              </div>
                             </div>
                             <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Telepon<span class="float-end">:</span></label>
-                              <label class="col-sm-9 col-form-label text-dark">{{ $Kontak == null ? '-' : $Kontak->NoHp }}</label>
-                            </div>
-                            <div class="row">
-                              <label class="col-sm-3 col-form-label text-dark">Alamat<span class="float-end">:</span></label>
-                              <label class="col-sm-9 col-form-label text-dark">{{ $Kontak == null ? '-' : $Kontak->Alamat }}</label>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Telepon<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Kontak == null ? '-' : $Kontak->NoHp }}</label>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="row">
+                                  <label class="col-6 col-form-label text-dark">Alamat<span class="float-end">:</span></label>
+                                  <label class="col-6 col-form-label text-capitalize text-dark">{{ $Kontak == null ? '-' : $Kontak->Alamat }}</label>
+                                </div>
+                              </div>
                             </div>
                           </div>
                           <!-- ANAK -->
                           <div class="col-md-12 mt-3">
-                            <h6 class="text-dark"><strong>3. Data anak</strong></h6>
+                            <h6 class="text-dark fw-bold">3. Data anak</h6>
                           </div>
-                          <div class="col-md-12 mt-3">
+                          <div class="col-md-12 mt-1">
                             <div class="row">
                               <div class="col-md-12">
                                 <div class="table-responsive">
@@ -288,9 +434,9 @@
                           </div>
                           <!-- ORANG TUA -->
                           <div class="col-md-12 mt-3">
-                            <h6 class="text-dark"><strong>4. Data orang tua <span class="fst-italic">(Ayah dan Ibu)</span></strong></h6>
+                            <h6 class="text-dark fw-bold">4. Data orang tua <span class="fst-italic">(Ayah dan Ibu)</span></h6>
                           </div>
-                          <div class="col-md-12 mt-3">
+                          <div class="col-md-12 mt-1">
                             <div class="row">
                               <div class="col-md-12">
                                 <div class="table-responsive">
@@ -333,9 +479,9 @@
                           </div>
                           <!-- SAUDARA -->
                           <div class="col-md-12 mt-3">
-                            <h6 class="text-dark"><strong>5. Data saudara kandung <span class="fst-italic">(Kakak dan Adik)</span></strong></h6>
+                            <h6 class="text-dark fw-bold">5. Data saudara kandung <span class="fst-italic">(Kakak dan Adik)</span></h6>
                           </div>
-                          <div class="col-md-12 mt-3">
+                          <div class="col-md-12 mt-1">
                             <div class="row">
                               <div class="col-md-12">
                                 <div class="table-responsive">
@@ -376,15 +522,15 @@
                         </div>
 
                         <!-- C. TAMBAHAN SAYA LAINNYA -->
-                        <div class="row mt-3 mb-3">
+                        <div class="row mt-3 mb-3 invoice-content">
                           <div class="col-md-12">
                             <h5 class="text-dark"><strong>C. TAMBAHAN SAYA LAINNYA</strong></h5>
                           </div>
                           <!-- PENGALAMAN KERJA -->
                           <div class="col-md-12 mt-3">
-                            <h6 class="text-dark"><strong>1. Pengalaman Kerja.</strong></h6>
+                            <h6 class="text-dark fw-bold">1. Pengalaman Kerja.</h6>
                           </div>
-                          <div class="col-md-12 mt-3">
+                          <div class="col-md-12 mt-1">
                             <div class="row">
                               <div class="col-md-12">
                                 <div class="table-responsive">
@@ -428,9 +574,9 @@
                           </div>
                           <!-- KETERAMPILAN -->
                           <div class="col-md-12 mt-3">
-                            <h6 class="text-dark"><strong>2. Keterampilan, Bahasa, Olahraga, Keorganisasian dll. yang pernah diikuti.</strong></h6>
+                            <h6 class="text-dark fw-bold">2. Keterampilan, Bahasa, Olahraga, Keorganisasian dll. yang pernah diikuti.</h6>
                           </div>
-                          <div class="col-md-12 mt-3">
+                          <div class="col-md-12 mt-1">
                             <div class="row">
                               <div class="col-md-12">
                                 <div class="table-responsive">
@@ -464,9 +610,9 @@
                           </div>
                           <!-- PENDIDIKAN NON FORMAL -->
                           <div class="col-md-12 mt-3">
-                            <h6 class="text-dark"><strong>3. Pendidikan, pengembangan lain yang sedang atau akan dilakukan dalam 2 tahun mendatang.</strong></h6>
+                            <h6 class="text-dark fw-bold">3. Pendidikan, pengembangan lain yang sedang atau akan dilakukan dalam 2 tahun mendatang.</h6>
                           </div>
-                          <div class="col-md-12 mt-3">
+                          <div class="col-md-12 mt-1">
                             <div class="row">
                               <div class="col-md-12">
                                 <div class="table-responsive">
@@ -502,9 +648,9 @@
                           </div>
                           <!-- PERTANYAAN LAINNYA -->
                           <div class="col-md-12 mt-3">
-                            <h6 class="text-dark"><strong>4. Pertanyaan lainnya.</strong></h6>
+                            <h6 class="text-dark fw-bold">4. Pertanyaan lainnya.</h6>
                           </div>
-                          <div class="col-md-12 mt-3">
+                          <div class="col-md-12 mt-1">
                             <div class="row">
                               <div class="col-md-12">
                                 <div class="table-responsive">
@@ -562,7 +708,7 @@
                         </div>
 
                         <!-- D. CATATAN TAMBAHAN -->
-                        <div class="row mt-3 mb-3">
+                        <div class="row mt-3 mb-3 invoice-content">
                           <div class="col-md-12">
                             <h5 class="text-dark"><strong>D. CATATAN TAMBAHAN</strong></h5>
                           </div>
@@ -572,7 +718,7 @@
                         </div>
                         
                         <!-- E. CATATAN DARI HRD PERUSAHAAN -->
-                        <div class="row mt-3 mb-3">
+                        <div class="row mt-3 mb-3 invoice-content">
                           <div class="col-md-12">
                             <h5 class="text-dark"><strong>E. CATATAN DARI HRD PERUSAHAAN</strong></h5>
                           </div>
@@ -714,7 +860,7 @@
                         </div>
 
                         <!-- F. PERNYATAAN -->
-                        <div class="row mt-3 mb-3">
+                        <div class="row mt-3 mb-3 invoice-content">
                           <div class="col-md-12">
                             <h5 class="text-dark"><strong>F. PERNYATAAN</strong></h5>
                           </div>
@@ -743,8 +889,8 @@
 
                     <div class="d-print-none">
                       <div class="float-start">
-                        <!-- <button id="btn" class="btn btn-danger"><i class="fa fa-print me-1"></i> Generate PDF</button> -->
-                        <a href="javascript:window.print()" class="btn btn-success waves-effect waves-light me-1"><i class="fa fa-print me-1"></i> Cetak</a>
+                        <button id="btnPrint" class="btn btn-danger"><i class="fa fa-print me-1"></i> Cetak</button>
+                        <!-- <a href="javascript:window.print()" class="btn btn-success waves-effect waves-light me-1"><i class="fa fa-print me-1"></i> Cetak</a> -->
                       </div>
                     </div>
                   </div>
@@ -776,53 +922,30 @@
     <x-loader-component></x-loader-component>
     <!-- Datatable end -->
     
-    <script src="{{ asset('assets/js/app.js') }}"></script>    
-    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jspdf-html2canvas@latest/dist/jspdf-html2canvas.min.js"></script>
-    <script>
+    <script src="{{ asset('assets/js/app.js') }}"></script> 
+    <script src="https://jasonday.github.io/printThis/printThis.js"></script>  
+    <script type="text/javascript">
       $(document).ready(function () {
         $("#loading").hide();
+      });
+    </script>
+    <script>
+      // $('#btnPrint').on("click", function () {
+      //   $('.masterContent').printThis();
+      // });
 
-        // let btn           = document.getElementById('btn');
-        // let page          = document.getElementById('page');
-        // let PDFOutput     = "Identitas Pribadi {{ $Identitas->Nama }}.pdf";
-        // let IMGWaterMark  = "{{ asset(config('appsproperties.APPS_ICON_MAS')) }}";
+      // $('#btnPrint').printThis({
+      //   importCSS: true
+      //   //header: "<h1>Look at all of my kitties!</h1>"
+      // });
 
-        // btn.addEventListener('click', function(){
-        //   html2PDF(page, {
-        //     jsPDF: {
-        //       unit: 'pt',
-        //       format: 'a4',
-        //     },
-        //     html2canvas: {
-        //       imageTimeout: 1000,
-        //       logging: true,
-        //       useCORS: false,
-        //     },
-        //     imageType: 'image/jpeg',
-        //     imageQuality: 1,
-        //     margin: {
-        //       top: 20,
-        //       right: 10,
-        //       bottom: 50,
-        //       left: 10,
-        //     },
-        //     //watermark: undefined,
-        //     watermark({ pdf, pageNumber, totalPageNumber }) {
-        //       // pdf: jsPDF instance
-        //       pdf.setTextColor('#ddd');
-        //       pdf.text(50, pdf.internal.pageSize.height - 30, `Aplikasi e-Recruitment PT Multi Arta Sekawan, page: ${pageNumber}/${totalPageNumber}`);
-        //     },
-        //     autoResize: false,
-        //     output: PDFOutput,
-        //     init: function() {},
-        //     success: function(pdf) {
-        //       pdf.save(this.output);
-        //     }
-        //   });
-        // });
 
+      $('#btnPrint').on("click", function () {
+        $('.masterContent').printThis({
+          importCSS: true
+          // header: "<h1>Look at all of my kitties!</h1>",
+          //base: "https://jasonday.github.io/printThis/"
+        });
       });
     </script>
   </body>

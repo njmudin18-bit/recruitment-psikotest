@@ -31,6 +31,7 @@
     <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- App Css-->
     <link href="{{ asset('assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/css/customs.css') }}" id="app-style" rel="stylesheet" type="text/css" />
     <style>
       .navigation.nav-sticky .navbar-nav .nav-item .nav-link {
         color: #fff !important;
